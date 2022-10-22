@@ -1,3 +1,2 @@
-revisi:
-1. menambahkan scrollview di login, register, dan profile
-2. mengimplementasikan style
+yang sudah dikerjakan:
+1. tba
