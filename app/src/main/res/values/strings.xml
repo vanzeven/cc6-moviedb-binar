@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name" translatable="false">ffMovieDB</string>
+    <string name="prompt_email">Insert email</string>
+    <string name="prompt_password">Insert password</string>
+    <string name="action_sign_in">Log in</string>
+    <string name="dont_have_account">Don\'t have account?</string>
+    <string name="prompt_username">Enter username</string>
+    <string name="login">Log In</string>
+    <string name="register">Register</string>
+    <string name="log_out">Log out</string>
+    <string name="profile">Profile</string>
+    <string name="update">Update</string>
+    <string name="enter_full_name">Enter Full Name</string>
+    <string name="insert_date_of_birth">Insert date of birth</string>
+    <string name="insert_address">Insert address</string>
+</resources>

@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="ButtonStyle">
+        <item name="android:color">#215E00</item>
+    </style>
+    <style name="DescriptionStyle">
+        <item name="android:fontFamily">serif-monospace</item>
+    </style>
+</resources>
