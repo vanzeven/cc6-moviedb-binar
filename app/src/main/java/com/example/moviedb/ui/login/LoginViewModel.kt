@@ -1,25 +1,28 @@
 package com.example.moviedb.ui.login
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.moviedb.model.AccountDao
-import com.example.moviedb.model.AccountEntity
+import androidx.lifecycle.*
+import com.example.moviedb.model.DataStoreManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel (
-    val database : AccountDao, application: Application ) : AndroidViewModel(application) {
-    fun getAccountByEmail(email: String) : LiveData<AccountEntity> {
-        val dummy = MutableLiveData <AccountEntity>()
+@HiltViewModel
+class LoginViewModel @Inject constructor(val dataStoreManager: DataStoreManager): ViewModel() {
+    fun statusLogin(isLogin: Boolean) {
         viewModelScope.launch {
-            dummy.value = getData(email)
+            dataStoreManager.statusLogin(isLogin)
         }
-        return dummy
     }
 
-    private suspend fun getData(email: String) : AccountEntity? {
-        return database.getAccountyByEmail(email)
+    fun getUsername(): LiveData<String> {
+        return dataStoreManager.getUsername().asLiveData()
+    }
+
+    fun getPassword(): LiveData<String> {
+        return dataStoreManager.getPassword().asLiveData()
+    }
+
+    fun getLoginStatus(): LiveData<Boolean> {
+        return dataStoreManager.getLoginStatus().asLiveData()
     }
 }

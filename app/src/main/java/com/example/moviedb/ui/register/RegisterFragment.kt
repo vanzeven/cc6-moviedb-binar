@@ -12,7 +12,6 @@ import com.example.moviedb.R
 import com.example.moviedb.databinding.FragmentRegisterBinding
 import com.example.moviedb.model.AccountEntity
 import com.example.moviedb.model.AppDatabase
-import com.example.moviedb.ui.login.LoginViewModelFactory
 
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null

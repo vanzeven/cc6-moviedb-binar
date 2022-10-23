@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.example.moviedb.R
 import com.example.moviedb.databinding.FragmentProfileBinding
 
@@ -104,9 +106,15 @@ class ProfileFragment : Fragment() {
     }
 
     private val cameraResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                handleCameraImage(result.data)
+        registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+            binding.ivProfpic.load(result) {
+                crossfade(true)
+                target { result ->
+                    val bitmap = (result as BitmapDrawable).bitmap
+                    profileViewModel.uploadImage(Utils.convertBitmapToString(bitmap))
+                    profileViewModel.applyBlur(getImageUri(bitmap))
+                }
+                transformations(RoundedCornersTransformation())
             }
         }
 

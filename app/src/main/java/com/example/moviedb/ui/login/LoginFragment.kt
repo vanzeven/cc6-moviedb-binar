@@ -14,7 +14,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.moviedb.R
 import com.example.moviedb.databinding.FragmentLoginBinding
 import com.example.moviedb.model.AppDatabase
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
