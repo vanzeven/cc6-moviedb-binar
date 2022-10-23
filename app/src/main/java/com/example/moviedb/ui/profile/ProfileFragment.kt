@@ -113,7 +113,6 @@ class ProfileFragment : Fragment() {
     private fun handleCameraImage(intent: Intent?) {
         val bitmap = intent?.extras?.get("data") as Bitmap
         binding.ivProfpic.setImageBitmap(bitmap)
-
     }
 
     private fun isGranted(
