@@ -6,18 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.moviedb.R
 import com.example.moviedb.databinding.FragmentRegisterBinding
-import com.example.moviedb.model.AccountEntity
-import com.example.moviedb.model.AppDatabase
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var registerViewModel : RegisterViewModel
+    private val registerViewModel : RegisterViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -28,25 +28,17 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val application = requireNotNull(this.activity).application
-        val dataSource = AppDatabase.getInstance(application).accountDatabaseDao()
-        val viewModelFactory = LoginViewModelFactory(dataSource, application)
-        registerViewModel = ViewModelProvider(this, viewModelFactory)[RegisterViewModel::class.java]
-
-        binding.btnRegister.setOnClickListener{createAccount()}
+        binding.btnRegister.setOnClickListener{ toCreateAccount() }
     }
 
-    private fun createAccount() {
+    private fun toCreateAccount() {
         val username = binding.etUsername.text.toString()
         val email = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()
-        val konpassword = binding.etKonpassword.text.toString()
+        val confirmPassword = binding.etKonpassword.text.toString()
 
-        if (password == konpassword) {
-            registerViewModel.insertAccount(
-                AccountEntity(username = username,
-                    email = email, password = password)
-            )
+        if (password == confirmPassword) {
+            registerViewModel.saveAccount(username, password, email)
             Toast.makeText(requireContext(), "Pendaftaran berhasil", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         } else {
@@ -54,9 +46,8 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         _binding = null
     }
-
 }
