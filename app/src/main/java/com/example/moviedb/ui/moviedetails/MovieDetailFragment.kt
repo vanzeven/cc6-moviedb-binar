@@ -7,17 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.example.moviedb.R
 import com.example.moviedb.databinding.FragmentMovieDetailBinding
+import com.example.moviedb.di.ApiClient
+import com.example.moviedb.di.ApiService
 import com.example.moviedb.model.GetPopularItem
-import com.example.moviedb.service.ApiClient
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MovieDetailFragment : Fragment() {
     private var _binding: FragmentMovieDetailBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var api : ApiService
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +41,7 @@ class MovieDetailFragment : Fragment() {
 
     private fun getDetail() {
         val id = arguments?.getInt("ID")
-        ApiClient.instance.getDetail(id).enqueue(object: Callback<GetPopularItem> {
+        api.getDetail(id).enqueue(object: Callback<GetPopularItem> {
             override fun onResponse(
                 call: Call<GetPopularItem>,
                 response: Response<GetPopularItem>

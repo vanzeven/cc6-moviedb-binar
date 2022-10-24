@@ -1,11 +1,10 @@
 package com.example.moviedb.ui.profile
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -15,30 +14,26 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.example.moviedb.R
 import com.example.moviedb.databinding.FragmentProfileBinding
+import com.example.moviedb.workers.Utils
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.ByteArrayOutputStream
 
-
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var profileViewModel: ProfileViewModel
-    private lateinit var sharedPreferences: SharedPreferences
-    private val spLogin = "spLogin"
-    private val REQUEST_CODE_PERMISSION = 100
+    private val profileViewModel: ProfileViewModel by viewModels()
 
-    private val storagePermissionCode = 1
-    private var mActivity: Activity? = null
+    private val REQUEST_CODE_PERMISSION = 201
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mActivity = context as Activity
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -50,18 +45,31 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedPreferences = requireContext().getSharedPreferences(spLogin, Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-
         binding.btnLogout.setOnClickListener {
+            profileViewModel.statusLogin(false)
             findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
-            editor.clear()
-            editor.apply()
+        }
+
+        profileViewModel.getImage().observe(viewLifecycleOwner) {
+            if (it.isNullOrEmpty().not()) {
+                setProfilePicture(Utils.convertStringToBitmap(it))
+//                binding.tvView.visibility = View.VISIBLE
+            }
         }
 
         binding.btnUpdate.setOnClickListener{ update() }
         binding.ivProfpic.setOnClickListener { changePicture() }
+        binding.tvView.setOnClickListener {
+            Toast.makeText(requireContext(), "Membuka gambar", Toast.LENGTH_SHORT).show()
+            profileViewModel.outputUri?.let { currentUri ->
+                val actionView = Intent(Intent.ACTION_VIEW, currentUri)
+                startActivity(actionView)
+            }
+        }
+    }
 
+    private fun setProfilePicture(bitmap: Bitmap) {
+        binding.ivProfpic.load(bitmap)
     }
 
     private fun changePicture() {
@@ -93,27 +101,35 @@ class ProfileFragment : Fragment() {
     }
 
     private fun openGallery() {
-//        getIntent().type = "image/*"
-//        galleryResult.launch("image/*")
-        Toast.makeText(requireContext(), "to be implemented", Toast.LENGTH_SHORT).show()
+        requireActivity().intent.type = "image/*"
+        galleryResult.launch("image/*")
     }
 
     private fun openCamera() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraResult.launch(cameraIntent)
+        Toast.makeText(requireContext(), "to be implemented", Toast.LENGTH_SHORT).show()
     }
 
-    private val cameraResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                handleCameraImage(result.data)
+    private val galleryResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
+            binding.ivProfpic.load(result) {
+                target { result ->
+                    val bitmap = (result as BitmapDrawable).bitmap
+                    profileViewModel.uploadImage(Utils.convertBitmapToString(bitmap))
+                    profileViewModel.applyBlur(getImageUri(bitmap))
+                }
             }
         }
 
-    private fun handleCameraImage(intent: Intent?) {
-        val bitmap = intent?.extras?.get("data") as Bitmap
-        binding.ivProfpic.setImageBitmap(bitmap)
-
+    private fun getImageUri(bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path: String = MediaStore.Images.Media.insertImage(
+            requireContext().contentResolver,
+            bitmap,
+            "Initial Profile Picture",
+            null
+        )
+        return Uri.parse(path)
     }
 
     private fun isGranted(
@@ -145,20 +161,16 @@ class ProfileFragment : Fragment() {
 
     private fun update() {
         val username = binding.etUsername.text.toString()
-        val email = sharedPreferences.getString("email_key", null)
-        val password = sharedPreferences.getString("password_key", null)
+        val fullname = binding.etFullname.text.toString()
+        val address = binding.etPadress.text.toString()
 
-//        profileViewModel.updateAccount(
-//            AccountEntity(
-//                username = username,
-//                email = email,
-//                password = password)
-//        )
-
-        sharedPreferences.edit {
-            this.putString("username_key", username)
+        if (username != "") {
+            profileViewModel.editAccount(username, fullname, address)
+            Toast.makeText(requireContext(), "Berhasil mengupdate", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_profileFragment_to_noteFragment)
+        } else {
+            Toast.makeText(requireContext(), "Username tidak boleh kosong", Toast.LENGTH_SHORT).show()
         }
-        findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
     }
 
 }

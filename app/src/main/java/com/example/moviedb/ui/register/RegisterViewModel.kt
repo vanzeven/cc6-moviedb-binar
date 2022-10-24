@@ -1,22 +1,20 @@
 package com.example.moviedb.ui.register
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviedb.model.AccountDao
-import com.example.moviedb.model.AccountEntity
+import com.example.moviedb.model.DataStoreManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegisterViewModel (
-    val database : AccountDao, application: Application) : AndroidViewModel(application) {
-    fun insertAccount(account: AccountEntity) {
+@HiltViewModel
+class RegisterViewModel @Inject constructor(val dataStoreManager: DataStoreManager): ViewModel() {
+    fun saveAccount(username: String, password: String, email: String) {
         viewModelScope.launch {
-            getData(account)
+            dataStoreManager.setUsername(username)
+            dataStoreManager.setPassword(password)
+            dataStoreManager.setEmail(email)
         }
-    }
-
-    private suspend fun getData(account: AccountEntity) {
-        database.insertAccount(account)
     }
 
 }
