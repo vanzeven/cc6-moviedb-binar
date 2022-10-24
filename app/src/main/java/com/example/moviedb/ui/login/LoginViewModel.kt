@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(val dataStoreManager: DataStoreManager): ViewModel() {
+
     fun statusLogin(isLogin: Boolean) {
         viewModelScope.launch {
             dataStoreManager.statusLogin(isLogin)

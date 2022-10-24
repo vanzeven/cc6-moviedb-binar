@@ -1,4 +1,4 @@
-package com.example.moviedb.service
+package com.example.moviedb.di
 
 import com.example.moviedb.model.GetPopular
 import com.example.moviedb.model.GetPopularItem
