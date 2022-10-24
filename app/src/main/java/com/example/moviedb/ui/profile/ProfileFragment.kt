@@ -14,10 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.moviedb.R
@@ -36,6 +38,12 @@ class ProfileFragment : Fragment() {
 
     private val storagePermissionCode = 1
     private var mActivity: Activity? = null
+
+    private val viewModel: ProfileViewModel by viewModels {
+        ProfileViewModel.ProfileView(
+            application
+        )
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -63,6 +71,15 @@ class ProfileFragment : Fragment() {
 
         binding.btnUpdate.setOnClickListener{ update() }
         binding.ivProfpic.setOnClickListener { changePicture() }
+        binding.tvProfile.setOnClickListener {
+            viewModel.outputUri?.let { currentUri ->
+                val actionView = Intent(Intent.ACTION_VIEW, currentUri)
+                actionView.resolveActivity(packageManager)?.run {
+                    startActivity(actionView)
+                }
+            }
+
+        }
 
     }
 

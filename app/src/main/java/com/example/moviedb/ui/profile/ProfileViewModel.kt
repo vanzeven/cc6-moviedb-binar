@@ -3,10 +3,15 @@ package com.example.moviedb.ui.profile
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import androidx.work.*
+import com.example.moviedb.IMAGE_MANIPULATION_WORK_NAME
+import com.example.moviedb.KEY_IMAGE_URI
 import com.example.moviedb.TAG_OUTPUT
 import com.example.moviedb.model.DataStoreManager
+import com.example.moviedb.workers.BlurWorker
+import com.example.moviedb.workers.CleanupWorker
+import com.example.moviedb.workers.SaveImageToFileWorker
+import com.example.moviedb.workers.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
