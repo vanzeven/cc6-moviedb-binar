@@ -1,7 +1,5 @@
 package com.example.moviedb.ui.profile
 
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -35,9 +33,6 @@ class ProfileFragment : Fragment() {
 
     private val REQUEST_CODE_PERMISSION = 201
 
-    private val storagePermissionCode = 1
-    private var mActivity: Activity? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -49,16 +44,23 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         binding.btnLogout.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
             profileViewModel.statusLogin(false)
         }
 
+        profileViewModel.getImage().observe(viewLifecycleOwner) {
+            if (it.isNullOrEmpty().not()) {
+                setProfilePicture(Utils.convertStringToBitmap(it))
+            }
+        }
+
         binding.btnUpdate.setOnClickListener{ update() }
         binding.ivProfpic.setOnClickListener { changePicture() }
+    }
 
+    private fun setProfilePicture(bitmap: Bitmap) {
+        binding.ivProfpic.load(bitmap)
     }
 
     private fun changePicture() {
@@ -90,17 +92,15 @@ class ProfileFragment : Fragment() {
     }
 
     private fun openGallery() {
-//        getIntent().type = "image/*"
-//        galleryResult.launch("image/*")
-        Toast.makeText(requireContext(), "to be implemented", Toast.LENGTH_SHORT).show()
+        requireActivity().intent.type = "image/*"
+        galleryResult.launch("image/*")
     }
 
     private fun openCamera() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraResult.launch(cameraIntent.toString())
+        Toast.makeText(requireContext(), "to be implemented", Toast.LENGTH_SHORT).show()
     }
 
-    private val cameraResult =
+    private val galleryResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
             binding.ivProfpic.load(result) {
                 target { result ->
@@ -121,11 +121,6 @@ class ProfileFragment : Fragment() {
             null
         )
         return Uri.parse(path)
-    }
-
-    private fun handleCameraImage(intent: Intent?) {
-        val bitmap = intent?.extras?.get("data") as Bitmap
-        binding.ivProfpic.setImageBitmap(bitmap)
     }
 
     private fun isGranted(

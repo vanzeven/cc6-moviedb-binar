@@ -30,7 +30,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnRegister.setOnClickListener{ toRegistPage() }
+        binding.btnRegister.setOnClickListener{ findNavController().navigate(R.id.action_loginFragment_to_registerFragment) }
         binding.btnLogin.setOnClickListener { toLoggingIn() }
 
         val option = NavOptions.Builder()
@@ -69,10 +69,6 @@ class LoginFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Akun tidak ditemukan atau password salah", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun toRegistPage() {
-        findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
     }
 
     override fun onDestroy() {

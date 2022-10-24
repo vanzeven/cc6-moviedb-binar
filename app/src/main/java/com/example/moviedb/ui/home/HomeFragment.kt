@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviedb.R
 import com.example.moviedb.adapter.HomeAdapter
 import com.example.moviedb.databinding.FragmentHomeBinding
 import com.example.moviedb.model.GetPopular
@@ -53,6 +55,7 @@ class HomeFragment : Fragment() {
         homeViewModel.getUsername().observe(viewLifecycleOwner) {
             binding.tvUser.text = "Welcome, " + it.toString() + "!"
         }
+        binding.btnProfile.setOnClickListener{ findNavController().navigate(R.id.action_noteFragment_to_profileFragment) }
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
