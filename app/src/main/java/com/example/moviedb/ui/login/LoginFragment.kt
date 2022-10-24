@@ -59,7 +59,7 @@ class LoginFragment : Fragment() {
             passwordAccount = it.toString()
         }
 
-        if (username == usernameAccount && password == passwordAccount) {
+        if (username != "" && username == usernameAccount && password == passwordAccount) {
             val option = NavOptions.Builder()
                 .setPopUpTo(R.id.loginFragment, true)
                 .build()

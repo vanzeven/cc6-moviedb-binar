@@ -45,8 +45,8 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnLogout.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
             profileViewModel.statusLogin(false)
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
 
         profileViewModel.getImage().observe(viewLifecycleOwner) {
@@ -155,9 +155,13 @@ class ProfileFragment : Fragment() {
         val fullname = binding.etFullname.text.toString()
         val address = binding.etPadress.text.toString()
 
-        profileViewModel.editAccount(username, fullname, address)
-        Toast.makeText(requireContext(), "Berhasil mengupdate", Toast.LENGTH_SHORT).show()
-        findNavController().navigate(R.id.action_profileFragment_to_noteFragment)
+        if (username != "") {
+            profileViewModel.editAccount(username, fullname, address)
+            Toast.makeText(requireContext(), "Berhasil mengupdate", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_profileFragment_to_noteFragment)
+        } else {
+            Toast.makeText(requireContext(), "Username tidak boleh kosong", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

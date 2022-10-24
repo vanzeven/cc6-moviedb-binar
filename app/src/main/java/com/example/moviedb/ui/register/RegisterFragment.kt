@@ -37,12 +37,16 @@ class RegisterFragment : Fragment() {
         val password = binding.etPassword.text.toString()
         val confirmPassword = binding.etKonpassword.text.toString()
 
-        if (password == confirmPassword) {
-            registerViewModel.saveAccount(username, password, email)
-            Toast.makeText(requireContext(), "Pendaftaran berhasil", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        if (username != "") {
+            if (password == confirmPassword) {
+                registerViewModel.saveAccount(username, password, email)
+                Toast.makeText(requireContext(), "Pendaftaran berhasil", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+            } else {
+                Toast.makeText(requireContext(), "Password tidak sama", Toast.LENGTH_SHORT).show()
+            }
         } else {
-            Toast.makeText(requireContext(), "Password tidak sama", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Username tidak boleh kosong", Toast.LENGTH_SHORT).show()
         }
     }
 
