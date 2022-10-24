@@ -28,10 +28,10 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnRegister.setOnClickListener{ toCreateAccount() }
+        binding.btnRegister.setOnClickListener{ register() }
     }
 
-    private fun toCreateAccount() {
+    private fun register() {
         val username = binding.etUsername.text.toString()
         val email = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()

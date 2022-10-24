@@ -1,5 +1,6 @@
 package com.example.moviedb.ui.profile
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -52,11 +53,19 @@ class ProfileFragment : Fragment() {
         profileViewModel.getImage().observe(viewLifecycleOwner) {
             if (it.isNullOrEmpty().not()) {
                 setProfilePicture(Utils.convertStringToBitmap(it))
+//                binding.tvView.visibility = View.VISIBLE
             }
         }
 
         binding.btnUpdate.setOnClickListener{ update() }
         binding.ivProfpic.setOnClickListener { changePicture() }
+        binding.tvView.setOnClickListener {
+            Toast.makeText(requireContext(), "Membuka gambar", Toast.LENGTH_SHORT).show()
+            profileViewModel.outputUri?.let { currentUri ->
+                val actionView = Intent(Intent.ACTION_VIEW, currentUri)
+                startActivity(actionView)
+            }
+        }
     }
 
     private fun setProfilePicture(bitmap: Bitmap) {

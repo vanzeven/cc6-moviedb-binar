@@ -17,15 +17,15 @@ class DataStoreManager @Inject constructor(@ApplicationContext private val conte
         }
     }
 
-    suspend fun setPassword(password: String) {
-        context.accountDataStore.edit {
-            it[PASSWORD] = password
-        }
-    }
-
     suspend fun setEmail(email: String) {
         context.accountDataStore.edit {
             it[EMAIL] = email
+        }
+    }
+
+    suspend fun setPassword(password: String) {
+        context.accountDataStore.edit {
+            it[PASSWORD] = password
         }
     }
 
@@ -65,12 +65,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext private val conte
         }
     }
 
-    fun getAddress(): Flow<String> {
-        return context.accountDataStore.data.map {
-            it[ADDRESS] ?: ""
-        }
-    }
-
     fun getImage(): Flow<String> {
         return context.accountDataStore.data.map {
             it[IMAGE] ?: ""
@@ -87,8 +81,8 @@ class DataStoreManager @Inject constructor(@ApplicationContext private val conte
         private const val DATASTORE_NAME = "database"
 
         private val USERNAME = stringPreferencesKey("username_key")
-        private val PASSWORD = stringPreferencesKey("password_key")
         private val EMAIL = stringPreferencesKey("email_key")
+        private val PASSWORD = stringPreferencesKey("password_key")
         private val ADDRESS = stringPreferencesKey("address_key")
         private val FULLNAME = stringPreferencesKey("fullname_key")
         private val IMAGE = stringPreferencesKey("image_key")

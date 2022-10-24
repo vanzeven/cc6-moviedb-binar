@@ -31,23 +31,28 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnRegister.setOnClickListener{ findNavController().navigate(R.id.action_loginFragment_to_registerFragment) }
-        binding.btnLogin.setOnClickListener { toLoggingIn() }
+        binding.btnLogin.setOnClickListener { login() }
+        binding.btnLogin.isClickable = false
+        binding.btnRegister.isClickable = false
 
         val option = NavOptions.Builder()
             .setPopUpTo(R.id.loginFragment, true)
             .build()
 
+
         loginViewModel.getLoginStatus().observe(viewLifecycleOwner) {
             if (it == true) {
                 findNavController().navigate(R.id.action_loginFragment_to_noteFragment, null, option)
+            } else {
+                binding.btnLogin.isClickable = true
+                binding.btnRegister.isClickable = true
             }
         }
     }
 
-    private fun toLoggingIn() {
+    private fun login() {
         val username = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()
-
         var usernameAccount: String? = ""
         var passwordAccount: String? = ""
 

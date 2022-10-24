@@ -66,6 +66,7 @@ class HomeFragment : Fragment() {
     private fun getMovieData(callback: (List<GetPopularItem>) -> Unit){
         api.getPopular().enqueue(object : Callback<GetPopular> {
             override fun onResponse(call: Call<GetPopular>, response: Response<GetPopular>) {
+                binding.pb.visibility = View.GONE
                 return callback(response.body()!!.movies)
             }
 
